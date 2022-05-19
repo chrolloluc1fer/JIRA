@@ -45,7 +45,7 @@ body{
     width: 3rem;
 }
 
-.lightpink{
+.pink{
     cursor: pointer;
     background-color:lightpink;
 }
@@ -151,7 +151,7 @@ body{
     position: sticky;
     top: 0;
 }
-.ticket-color.lightpink{
+.ticket-color.pink{
     background-color: lightpink;
 }
 

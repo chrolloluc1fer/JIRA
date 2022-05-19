@@ -10,6 +10,8 @@ var uid = new ShortUniqueId();
 let ticketArr = [];
 
 
+  
+
 
 toolbox_color.forEach(btnclr=>{
     btnclr.addEventListener("click",()=>{
@@ -53,18 +55,27 @@ toolbox_color.forEach(btnclr=>{
 })
 
 
-
-
-
-
-
-
-
-
-
 add_btn.addEventListener("click", () => {
     modal.classList.toggle("active")
 })
+
+
+
+modal.addEventListener("keydown", (e) => {
+    if (e.key == "Enter") {
+        modal.classList.toggle("active");
+        
+        manageTicket(text_area.value, c);
+        text_area.value = "";
+    }
+})
+
+
+
+
+
+
+
 
 let c = "black";
 
@@ -76,32 +87,21 @@ for (let i = 0; i < pty_btn.length; i++) {
         }
         prioritycolor.classList.add("active");
         c = prioritycolor.classList[0];
-        console.log(c)
+        
+
+        
     })
 }
 
-modal.addEventListener("keydown", (e) => {
-    if (e.key == "Enter") {
-        modal.classList.toggle("active");
-        
-        manageTicket(text_area.value, c);
-        text_area.value = "";
-    }
-})
+
 
 //Managing delAll button
 
 const delall = document.querySelector(".fa-trash")
 delall.addEventListener("click", () => {
     delall.classList.toggle("active");
+
 })
-
-
-
-
-
-
-
 
 
 function manageTicket(text, color,ticketId) {
@@ -119,15 +119,19 @@ function manageTicket(text, color,ticketId) {
                         <div class="ticket-id ">#${id}</div>
                         <div class="task-area" contentEditable="false">${text}</div> 
                         <div class="lock-unlock"><i class="fa fa-lock"></i></div>`
-                        console.log(newTicket)
+                       
     main_cont.appendChild(newTicket);
-    const tickets = main_cont.querySelectorAll(".ticket-cont");
-    tickets.forEach(ticket => {
-        ticket.addEventListener("click", () => {
+    
+   
+        newTicket.addEventListener("click", () => {
             if (delall.classList.contains("active"))
-                ticket.remove();
+            
+                newTicket.remove();
+                let ticketIdx = getTicketIdx(id);
+                ticketArr.splice(ticketIdx ,1)
         })
-    })
+
+    
 
     //Managing color
     const ticketclr = newTicket.querySelector(".ticket-color");
@@ -145,8 +149,14 @@ function manageTicket(text, color,ticketId) {
         ticketclr.classList.remove(currentcolor);
         ticketclr.classList.add(nextcolor);
 
-    })
+        let tktIdx = getTicketIdx(id);
+     
+        ticketArr[tktIdx].color = nextcolor;
       
+        
+
+    })
+
     //managing lock-unlock
 
 const lock =  newTicket.querySelector(".fa-lock")
@@ -163,17 +173,33 @@ lock.addEventListener("click",()=>{
         task_area.setAttribute("contentEditable","false")
         
     }
+   let tktIdx = getTicketIdx(id);
+   
+    ticketArr[tktIdx].task = task_area.textContent;
 })
 
 
 if(ticketId === undefined){
 ticketArr.push({"color":color,"task":text,"id":id});
+let stringifyArr = JSON.stringify(ticketArr)
+localStorage.setItem("tickets",ticketArr);
 }
 
+
+
 }
 
 
 
+function getTicketIdx(id){
+    
+    for(let i = 0; i <ticketArr.length;i++){
+        if(ticketArr[i].id === id){
+            
+            return i
+        }
+    } 
+}
 
 
 
